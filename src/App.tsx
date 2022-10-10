@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import { Content } from './components/Content'
+import Box from '@mui/material/Box'
+import { Header } from './components/Header'
+import { Instructions } from './components/Instructions'
+import { Footer } from './components/Footer'
+import {
+  addCardsInLocalStrg,
+  getCardsFromLocalStrg
+} from './utils/card-actions'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export interface CardType {
+  cardNumber: number
+  id: string
 }
 
-export default App;
+export const App: React.FC = () => {
+  const [cardsInfo, setCardsInfo] = useState<CardType[]>(
+    getCardsFromLocalStrg()
+  )
+
+  useEffect(() => {
+    addCardsInLocalStrg(cardsInfo)
+  }, [cardsInfo])
+
+  const handleAdd = (card: CardType) => setCardsInfo([...cardsInfo, card])
+
+  const handleDelete = (deletedCardId: string) =>
+    setCardsInfo(cardsInfo.filter((card) => deletedCardId !== card.id))
+
+  const handleSort = () => {
+    setCardsInfo([...cardsInfo.sort((a, b) => +a.cardNumber - +b.cardNumber)])
+  }
+
+  return (
+    <Box style={{ display: 'flex', height: '100%', width: '100%' }}>
+      <Box style={{ width: '100%' }}>
+        <Header
+          addCardsInfo={handleAdd}
+          handleSort={handleSort}
+          cardsInfo={cardsInfo}
+        />
+        <Content Cards={cardsInfo} handleDelete={handleDelete} />
+        <Footer handleRemoveAll={() => setCardsInfo([])} />
+      </Box>
+      <Instructions />
+    </Box>
+  )
+}
