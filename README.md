@@ -1,6 +1,9 @@
-This is a React 18 application created using create-react-app;
+Project description:
+  A simple cards application, where you can create, sort and delete some randomly generated cards.
 
 Project specifications:
+description: This is a React 18 application created using create-react-app;
+
   1. Language: Typescript
   2. UI library: MaterialUI
   3. State managment tools: none
